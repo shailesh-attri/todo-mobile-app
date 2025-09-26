@@ -1,48 +1,130 @@
 import React from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-// ✅ Step 1: Type for navigation
 type RootStackParamList = {
   Home: undefined;
   Login: undefined;
+  Signup: undefined;
 };
-
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;
 
 type Props = {
-  navigation: HomeScreenNavigationProp;
+  navigation: StackNavigationProp<RootStackParamList, "Home">;
 };
 
-// ✅ Step 2: Home Component
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
-  const handleLogin = () => {
-    navigation.navigate("Login"); // 👈 navigate to Login
-  };
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>🏠 Welcome to Home Page</Text>
-      <Button title="Go to Login" onPress={handleLogin} />
-    </View>
+    <ImageBackground
+      source={require("../assets/bgImage.png")} // 👈 background image
+      style={styles.background}
+      blurRadius={4}
+    >
+      {/* Top Bar */}
+      <View style={styles.topBar}>
+        <Text style={styles.logo}>MetaTask</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <Text style={styles.topRightLink}>Sign in</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Hero Section */}
+      <View style={styles.hero}>
+        <Text style={styles.heading}>
+          Achieve More, Stress Less {"\n"} with Seamless Task Management App
+        </Text>
+        <Text style={styles.subtext}>
+          Elevate your productivity with our dynamic task app. Stay organized,
+          focused, and in control of your tasks.
+        </Text>
+
+        {/* Buttons */}
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            style={[styles.button, styles.signInBtn]}
+            onPress={() => navigation.navigate("Login")}
+          >
+            <Text style={styles.buttonText}>Sign In</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.signUpBtn]}
+            onPress={() => navigation.navigate("Signup")}
+          >
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ImageBackground>
   );
 };
 
 export default HomeScreen;
 
-// ✅ Step 3: CSS (StyleSheet)
 const styles = StyleSheet.create({
-  container: {
-    flex: 1, // full screen
-    justifyContent: "center", // center vertically
-    alignItems: "center", // center horizontally
-    backgroundColor: "#f0f4f8",
-    padding: 20,
+  background: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
+  },
+  topBar: {
+    position: "absolute",
+    top: 40,
+    left: 20,
+    right: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  logo: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
+  },
+  topRightLink: {
+    fontSize: 16,
+    color: "white",
+  },
+  hero: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
   },
   heading: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: "bold",
-    marginBottom: 20,
-    color: "#333",
+    color: "white",
+    textAlign: "center",
+    marginBottom: 15,
+  },
+  subtext: {
+    fontSize: 16,
+    color: "#ddd",
+    textAlign: "center",
+    marginBottom: 25,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    gap: 15,
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 6,
+  },
+  signInBtn: {
+    backgroundColor: "#1976d2",
+  },
+  signUpBtn: {
+    backgroundColor: "#333",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
   },
 });
