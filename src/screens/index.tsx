@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
+  Button,
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
