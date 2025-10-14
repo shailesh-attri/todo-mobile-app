@@ -1,17 +1,16 @@
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import Login from './screens/login/login'
-import Home from './screens'
+import Login from './src/screens/login/login'
+import HomeScreen from './src/screens'
+import RootNavigation from './src/Navigation/rootNavigation'
+import { View } from 'react-native'
 const Stack = createStackNavigator()
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={Home}></Stack.Screen>
-        <Stack.Screen name="Login" component={Login}></Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+   <View style={{flex:1}}>
+    <RootNavigation/>
+   </View>
   )
 }
 
