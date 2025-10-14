@@ -6,6 +6,7 @@ import HomeScreen from './src/screens'
 import RootNavigation from './src/Navigation/rootNavigation'
 import { View } from 'react-native'
 const Stack = createStackNavigator()
+
 const App = () => {
   return (
    <View style={{flex:1}}>

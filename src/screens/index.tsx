@@ -1,16 +1,21 @@
 import React from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 type RootStackParamList = {
   Home: undefined;
   Login: undefined;
+  Signup: undefined;
 };
 
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;
-
 type Props = {
-  navigation: HomeScreenNavigationProp;
+  navigation: StackNavigationProp<RootStackParamList, "Home">;
 };
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
@@ -37,9 +42,35 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   heading: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: "bold",
-    marginBottom: 20,
-    color: "#333",
+    color: "white",
+    textAlign: "center",
+    marginBottom: 15,
+  },
+  subtext: {
+    fontSize: 16,
+    color: "#ddd",
+    textAlign: "center",
+    marginBottom: 25,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    gap: 15,
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 6,
+  },
+  signInBtn: {
+    backgroundColor: "#1976d2",
+  },
+  signUpBtn: {
+    backgroundColor: "#333",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
   },
 });
