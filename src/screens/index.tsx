@@ -1,12 +1,9 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { RootStackParamList } from "../types/rootStackParamsTypes";
 
-type RootStackParamList = {
-  Login: undefined;
-  Signup: undefined;
-  BottomTabNavigation: undefined;
-};
+
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -33,7 +30,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           <TouchableOpacity>
             <Text style={styles.HomeBtn} onPress={()=>navigation.navigate("Login")}>Login</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=>navigation.navigate("Signup")}>
             <Text style={styles.signupBtn}>Signup</Text>
           </TouchableOpacity>
         </View>
