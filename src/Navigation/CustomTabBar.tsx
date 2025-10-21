@@ -11,6 +11,7 @@ import {
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import Svg, { Path } from "react-native-svg";
+import AvatarMenu from "../components/AvatarMenu";
 
 const { width } = Dimensions.get("window");
 
@@ -29,14 +30,14 @@ const CustomTabBar = ({
         ? "list-outline"
         : route.name === "CompletedTask"
         ? "checkmark-done-outline"
-        : "star-outline";
+        : null;
 
     const label =
       route.name === "AllTasks"
         ? "All Tasks"
         : route.name === "CompletedTask"
         ? "Completed"
-        : "Important";
+        : "";
 
     return (
       <PressButton
@@ -44,11 +45,13 @@ const CustomTabBar = ({
         onPress={() => navigation.navigate(route.name)}
         style={styles.tabButton}
       >
-        <Ionicons
-          name={icon}
-          size={22}
-          color={isFocused ? "#007AFF" : "#888"}
-        />
+        {icon && (
+          <Ionicons
+            name={icon}
+            size={22}
+            color={isFocused ? "#007AFF" : "#888"}
+          />
+        )}
         <Text
           style={[styles.tabLabel, { color: isFocused ? "#007AFF" : "#888" }]}
         >
@@ -69,16 +72,14 @@ const CustomTabBar = ({
       {/* SVG background with center dip */}
       <Svg width={width} height={80} style={styles.svgStyle}>
         <Path
-          d={`
-            M0 20 
-            H${width / 2 - 80}
-            C${width / 2 - 40} 20, ${width / 2 - 40} 60, ${width / 2} 60
-            C${width / 2 + 40} 60, ${width / 2 + 40} 20, ${width / 2 + 80} 20
-            H${width}
-            V80
-            H0
-            Z
-          `}
+          d={`M0 20 
+          H${width / 2 - 80}
+          C${width / 2 - 40} 20, ${width / 2 - 40} 60, ${width / 2} 60
+          C${width / 2 + 40} 60, ${width / 2 + 40} 20, ${width / 2 + 80} 20
+          H${width}
+          V80
+          H0
+          Z`}
           fill="white"
           stroke="rgba(0,0,0,0.1)"
           strokeWidth={1}
@@ -96,7 +97,13 @@ const CustomTabBar = ({
       {/* Tabs split left and right */}
       <View style={styles.tabRow}>
         <View style={styles.sideTabs}>{leftTabs.map(renderTab)}</View>
-        <View style={styles.sideTabs}>{rightTabs.map(renderTab)}</View>
+
+        <View style={styles.sideTabsRight}>
+          {rightTabs.map(renderTab)}
+
+          {/* ✅ Avatar Button at the end */}
+          <AvatarMenu />
+        </View>
       </View>
     </View>
   );
@@ -114,6 +121,12 @@ const styles = StyleSheet.create({
   svgStyle: {
     position: "absolute",
     bottom: 0,
+  },
+  sideTabsRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    width: width / 2.5,
   },
   tabRow: {
     flexDirection: "row",
@@ -133,7 +146,7 @@ const styles = StyleSheet.create({
   },
 
   tabButton: {
-    flexDirection:"column",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
   },

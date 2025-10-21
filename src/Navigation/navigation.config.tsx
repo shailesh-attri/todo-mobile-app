@@ -11,6 +11,7 @@ import AllTasks from "../screens/Dashboard/AllTask";
 import CompletedTask from "../screens/Dashboard/CompletedTask";
 import ImportantTask from "../screens/Dashboard/ImportantTask";
 import { TouchableOpacity } from "react-native";
+import AvatarMenu from "../components/AvatarMenu";
 
 export interface IRootScreen {
   name: string;
@@ -81,35 +82,41 @@ export const bottomNavigationScreens: IBottomScreen[] = [
     },
   },
   {
-  name: "AddTask",
-  Component: CompletedTask,
-  order: 2.5,
-  options: {
-    tabBarButton: (props) => (
-      <TouchableOpacity
-        {...props as any}
-        style={{
-          position: "absolute",
-          top: -30,
-          alignSelf: "center", // ✅ center horizontally
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#007AFF",
-          width: 65,
-          height: 65,
-          borderRadius: 32.5,
-          shadowColor: "#007AFF",
-          shadowOpacity: 0.3,
-          shadowOffset: { width: 0, height: 5 },
-          elevation: 6,
-          zIndex: 10, // ✅ ensures it appears above others
-        }}
-
-      >
-        <Ionicons name="add" color="white" size={30} />
-      </TouchableOpacity>
-    ),
+    name: "Profile",
+    Component: AllTasks, // dummy screen (you won’t navigate)
+    order: 4,
+    options: {
+      tabBarButton: () => <AvatarMenu />, // 👈 replaces button with custom avatar menu
+    },
   },
-}
-
+  {
+    name: "AddTask",
+    Component: CompletedTask,
+    order: 2.5,
+    options: {
+      tabBarButton: (props) => (
+        <TouchableOpacity
+          {...(props as any)}
+          style={{
+            position: "absolute",
+            top: -30,
+            alignSelf: "center", // ✅ center horizontally
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#007AFF",
+            width: 65,
+            height: 65,
+            borderRadius: 32.5,
+            shadowColor: "#007AFF",
+            shadowOpacity: 0.3,
+            shadowOffset: { width: 0, height: 5 },
+            elevation: 6,
+            zIndex: 10, // ✅ ensures it appears above others
+          }}
+        >
+          <Ionicons name="add" color="white" size={30} />
+        </TouchableOpacity>
+      ),
+    },
+  },
 ];

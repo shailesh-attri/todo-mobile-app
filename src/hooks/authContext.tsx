@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { navigate } from "../Navigation/navigationRef";  // 👈 Import global navigation helper
+import { navigate } from "../Navigation/navigationRef";
 
 interface AuthContextType {
   userToken: string | null;
@@ -31,15 +31,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const login = async (token: string) => {
-    await AsyncStorage.setItem("accessToken", token);
-    setUserToken(token);
-    navigate("BottomTabNavigation", { screen: "AllTasks" });
+    try {
+      await AsyncStorage.setItem("accessToken", token);
+      setUserToken(token);
+      navigate("BottomTabNavigation", { screen: "AllTasks" });
+    } catch (err) {
+      console.error("Error during login:", err);
+    }
   };
 
   const logout = async () => {
-    await AsyncStorage.removeItem("accessToken");
-    setUserToken(null);
-    navigate("Login");
+    try {
+      await AsyncStorage.removeItem("accessToken");
+      setUserToken(null);
+      navigate("Login");
+    } catch (err) {
+      console.error("Error during logout:", err);
+    }
   };
 
   return (

@@ -16,6 +16,7 @@ import { RootStackParamList } from "../../types/rootStackParamsTypes";
 import { loginRoute } from "../../utils/backendApi";
 import { useTaskContext } from "../../hooks/useTaskContext";
 import { SafeAreaView } from "react-native-safe-area-context";
+import apiClient from "../../hooks/axios.interceptor";
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "Login"
@@ -74,7 +75,7 @@ const Login = ({ navigation }: Props) => {
 
     setLoading(true);
     try {
-      const res = await axios.post(loginRoute, formData);
+      const res = await apiClient.post(loginRoute, formData);
       if (res.status === 200) {
         showToast("Login successful!", "success");
         AsyncStorage.setItem("accessToken", res?.data?.token);

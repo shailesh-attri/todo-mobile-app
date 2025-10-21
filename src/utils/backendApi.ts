@@ -2,7 +2,7 @@ const dev = 'http://localhost:8000'
 const prod = "https://dev-task-app.duckdns.org/task"
 export const baseurl = prod
 
-const api = `${baseurl}/api`
+const api = `/api`
 export const loginRoute = `${api}/user/login`
 export const changeAvatar = `${api}/user/changeAvatar`
 export const registerRoute = `${api}/user/register`
