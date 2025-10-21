@@ -1,11 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
   Easing,
-  Platform,
-  SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   TextInput,
@@ -17,7 +14,8 @@ import axios from "axios";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types/rootStackParamsTypes";
 import { loginRoute } from "../../utils/backendApi";
-
+import { useTaskContext } from "../../hooks/useTaskContext";
+import { SafeAreaView } from "react-native-safe-area-context";
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "Login"
@@ -33,6 +31,7 @@ interface ILogin {
 }
 
 const Login = ({ navigation }: Props) => {
+  const { sendUserData } = useTaskContext();
   const [message, setMessage] = useState<{
     text: string;
     type: "success" | "error";
@@ -78,7 +77,9 @@ const Login = ({ navigation }: Props) => {
       const res = await axios.post(loginRoute, formData);
       if (res.status === 200) {
         showToast("Login successful!", "success");
-        navigation.navigate("Dashboard");
+        AsyncStorage.setItem("accessToken", res?.data?.token);
+        sendUserData(res?.data);
+        navigation.navigate("BottomTabNavigation", { screen: "AllTasks" });
       }
     } catch (error: any) {
       setLoading(false);
@@ -107,13 +108,11 @@ const Login = ({ navigation }: Props) => {
             styles.toastWrapper,
             {
               transform: [{ translateY: slideAnim }],
-              backgroundColor: message.type === "error" ? "#dc2626" : "#16a34a",
+              backgroundColor: message.type === "error" ? "#b91c1c" : "#166534",
             },
           ]}
         >
-          <SafeAreaView>
-            <Text style={styles.toastText}>{message.text}</Text>
-          </SafeAreaView>
+          <Text style={styles.toastText}>{message.text}</Text>
         </Animated.View>
       )}
 
@@ -248,21 +247,22 @@ const styles = StyleSheet.create({
   },
   toastWrapper: {
     position: "absolute",
-    top: 0, // 🔥 start at the very top
+    top: 0, // now truly touches top border
     left: 0,
     right: 0,
-    paddingVertical: 14,
+    paddingVertical: 12,
     paddingHorizontal: 16,
     alignItems: "center",
     justifyContent: "center",
     zIndex: 9999,
     elevation: 10,
+    borderBottomLeftRadius: 6,
+    borderBottomRightRadius: 6,
   },
 
   toastText: {
     color: "white",
     fontWeight: "600",
     fontSize: 15,
-    textAlign: "center",
   },
 });
