@@ -1,17 +1,12 @@
-// src/context/AuthContext.tsx
-import React, { createContext, useState, useEffect, ReactNode, useRef } from "react";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../types/rootStackParamsTypes";
-
-type TNavigationProp = StackNavigationProp<RootStackParamList, "Login">;
+import { navigate } from "../Navigation/navigationRef";  // 👈 Import global navigation helper
 
 interface AuthContextType {
   userToken: string | null;
   loading: boolean;
   login: (token: string) => Promise<void>;
   logout: () => Promise<void>;
-  setNavigation: (navigation: TNavigationProp) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,11 +14,6 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [userToken, setUserToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const navigationRef = useRef<TNavigationProp | null>(null);
-
-  const setNavigation = (navigation: TNavigationProp) => {
-    navigationRef.current = navigation;
-  };
 
   useEffect(() => {
     const checkToken = async () => {
@@ -31,9 +21,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const token = await AsyncStorage.getItem("accessToken");
         if (token) {
           setUserToken(token);
-          if (navigationRef.current) {
-            navigationRef.current.navigate("BottomTabNavigation", { screen: "AllTasks" });
-          }
+          navigate("BottomTabNavigation", { screen: "AllTasks" });
         }
       } finally {
         setLoading(false);
@@ -45,21 +33,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (token: string) => {
     await AsyncStorage.setItem("accessToken", token);
     setUserToken(token);
-    if (navigationRef.current) {
-      navigationRef.current.navigate("BottomTabNavigation", { screen: "AllTasks" });
-    }
+    navigate("BottomTabNavigation", { screen: "AllTasks" });
   };
 
   const logout = async () => {
     await AsyncStorage.removeItem("accessToken");
     setUserToken(null);
-    if (navigationRef.current) {
-      navigationRef.current.navigate("Login");
-    }
+    navigate("Login");
   };
 
   return (
-    <AuthContext.Provider value={{ userToken, loading, login, logout, setNavigation }}>
+    <AuthContext.Provider value={{ userToken, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

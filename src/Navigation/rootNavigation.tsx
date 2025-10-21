@@ -5,6 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { DefaultTheme } from "@react-navigation/native";
 import { rootNavigationScreens } from "./navigation.config";
 import { IRootScreen } from "./navigation.config";
+import { navigationRef  } from "../Navigation/navigationRef"; 
 
 const RootNavigation = () => {
   const Stack = createStackNavigator();
@@ -17,7 +18,7 @@ const RootNavigation = () => {
     },
   };
   return (
-    <NavigationContainer theme={MyTheme}>
+    <NavigationContainer theme={MyTheme} ref={navigationRef }>
       <Stack.Navigator>
         {rootNavigationScreens
         ?.sort((a: IRootScreen, b: IRootScreen) => (a.order ?? 0) - (b.order ?? 0))
