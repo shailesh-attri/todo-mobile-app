@@ -1,6 +1,6 @@
 import React from 'react';
 import RootNavigation from './src/Navigation/rootNavigation';
-import { StyleSheet, ImageBackground, StatusBar } from 'react-native';
+import { StyleSheet, ImageBackground, StatusBar, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TaskContextProvider } from './src/hooks/taskContext';
 import { AuthProvider } from './src/hooks/authContext';
@@ -9,19 +9,23 @@ import Toast from "react-native-toast-message";
 const App = () => {
   return (
     <AuthProvider>
-    <TaskContextProvider>
-      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-        <ImageBackground
-          source={require('./src/assets/bgImage.png')}
-          style={styles.background}
-          resizeMode="cover"
-        >
-          <RootNavigation />
-        </ImageBackground>
-      </SafeAreaView>
-    </TaskContextProvider>
-    <Toast /> 
+      <TaskContextProvider>
+        <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+        <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+          <ImageBackground
+            source={require('./src/assets/bgImage.png')}
+            style={styles.background}
+            resizeMode="cover"
+          >
+            {/* Dark overlay */}
+            <View style={styles.overlay} />
+
+            {/* Main Navigation */}
+            <RootNavigation />
+          </ImageBackground>
+        </SafeAreaView>
+      </TaskContextProvider>
+      <Toast />
     </AuthProvider>
   );
 };
@@ -37,6 +41,9 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    zIndex:-1
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.55)', // 👈 adjust darkness here (0.3–0.7 typical)
   },
 });

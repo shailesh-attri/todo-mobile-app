@@ -9,9 +9,9 @@ import HomeScreen from "../screens";
 import BottomTabNavigation from "./bottomTabNavigation";
 import AllTasks from "../screens/Dashboard/AllTask";
 import CompletedTask from "../screens/Dashboard/CompletedTask";
-import ImportantTask from "../screens/Dashboard/ImportantTask";
 import { TouchableOpacity } from "react-native";
 import AvatarMenu from "../components/AvatarMenu";
+import CreateTaskModal from "../components/createTaskModal"
 
 export interface IRootScreen {
   name: string;
@@ -91,7 +91,7 @@ export const bottomNavigationScreens: IBottomScreen[] = [
   },
   {
     name: "AddTask",
-    Component: CompletedTask,
+    Component: CreateTaskModal,
     order: 2.5,
     options: {
       tabBarButton: (props) => (

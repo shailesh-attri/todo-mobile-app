@@ -1,4 +1,3 @@
-// src/components/AvatarMenu.tsx
 import React, { useState } from "react";
 import {
   View,
@@ -13,20 +12,30 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useTaskContext } from "../hooks/useTaskContext";
 
+// ✅ Local fallback avatar (place this image in your assets folder)
+
+
 const AvatarMenu = () => {
-    const { thisUser } = useTaskContext();
+  const { thisUser } = useTaskContext();
   const [visible, setVisible] = useState(false);
   const { logout } = useAuthContext();
+  const firstLetter = thisUser?.username ? thisUser.username.charAt(0).toUpperCase() : "U";
+  const defaultAvatar = { uri: `https://ui-avatars.com/api/?name=${firstLetter}&background=007AFF&color=fff` };
   const user = {
-    email: thisUser?.username, // Replace with TaskContext user
-    avatar: thisUser?.avatarUrl,
+    email: thisUser?.username || "Unknown User",
+    avatar:
+      thisUser?.avatarUrl && thisUser.avatarUrl.trim() !== ""
+        ? { uri: thisUser.avatarUrl }
+        : defaultAvatar, // ✅ fallback
   };
-
   return (
     <View style={styles.container}>
       {/* Avatar Button */}
-      <TouchableOpacity onPress={() => setVisible(true)} style={styles.avatarButton}>
-        <Image source={{ uri: user.avatar }} style={styles.avatar} />
+      <TouchableOpacity
+        onPress={() => setVisible(true)}
+        style={styles.avatarButton}
+      >
+        <Image source={user.avatar} style={styles.avatar} />
       </TouchableOpacity>
 
       {/* Popup Menu */}
@@ -36,17 +45,16 @@ const AvatarMenu = () => {
         animationType="fade"
         onRequestClose={() => setVisible(false)}
       >
-        {/* Overlay (closes on tap) */}
+        {/* Overlay */}
         <Pressable style={styles.overlay} onPress={() => setVisible(false)}>
           <View style={styles.menuWrapper}>
             <View style={styles.popup}>
-              {/* Arrow pointing to avatar tab */}
               <View style={styles.arrow} />
 
-              {/* Menu content */}
+              {/* Menu Content */}
               <View style={styles.menuContent}>
                 <View style={styles.userRow}>
-                  <Image source={{ uri: user.avatar }} style={styles.menuAvatar} />
+                  <Image source={user.avatar} style={styles.menuAvatar} />
                   <Text style={styles.email}>{user.email}</Text>
                 </View>
 
@@ -70,6 +78,7 @@ const AvatarMenu = () => {
 };
 
 export default AvatarMenu;
+
 
 const styles = StyleSheet.create({
   container: {

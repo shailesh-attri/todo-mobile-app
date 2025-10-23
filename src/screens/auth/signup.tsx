@@ -7,9 +7,14 @@ import {
   StyleSheet,
   Animated,
   Easing,
+  ActivityIndicator,
 } from "react-native";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootStackParamList } from "../../types/rootStackParamsTypes";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { baseurl, registerRoute } from "../../utils/backendApi";
+import apiClient from "../../hooks/axios.interceptor";
 
 type SignupScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -30,7 +35,7 @@ const Signup = ({ navigation }: Props) => {
     username: "",
     password: "",
   });
-
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{
     text: string;
     type: "success" | "error";
@@ -38,11 +43,9 @@ const Signup = ({ navigation }: Props) => {
 
   const slideAnim = useRef(new Animated.Value(-100)).current;
 
-  // Toast function
   const showToast = (text: string, type: "success" | "error") => {
     setMessage({ text, type });
 
-    // slide down
     Animated.timing(slideAnim, {
       toValue: 0,
       duration: 400,
@@ -50,7 +53,6 @@ const Signup = ({ navigation }: Props) => {
       useNativeDriver: true,
     }).start();
 
-    // hide after 3s
     setTimeout(() => {
       Animated.timing(slideAnim, {
         toValue: -100,
@@ -61,22 +63,59 @@ const Signup = ({ navigation }: Props) => {
     }, 3000);
   };
 
-  const handleRegister = () => {
-    if (formData.username === "" || formData.password === "") {
-      showToast("Please enter both username and password", "error");
+  const handleRegister = async () => {
+    const { username, password } = formData;
+    if (!username) {
+      showToast("Please enter a username", "error");
       return;
     }
 
-    // Mock success
-    showToast("Account created successfully!", "success");
+    // 🧩 Username validation
+    if (!/^[a-zA-Z_][a-zA-Z0-9_]{5,}$/.test(username)) {
+      showToast(
+        "Username must start with a letter/underscore and be at least 6 chars long",
+        "error"
+      );
+      return;
+    }
 
-    // Optionally navigate
-    setTimeout(() => navigation.navigate("Login"), 1500);
+    if (!password) {
+      showToast("Please enter a password", "error");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await apiClient.post(registerRoute, {
+        username,
+        password,
+      });
+
+      if (res.status === 200) {
+        showToast("Account created successfully!", "success");
+
+        setTimeout(() => {
+          navigation.navigate("Login");
+        }, 1500);
+      }
+    } catch (error: any) {
+      console.log("❌ Signup Error:", error?.response || error);
+
+      if (error?.response?.status === 404) {
+        showToast("User not found", "error");
+      } else if (error?.response?.status === 401) {
+        showToast("Username already taken", "error");
+      } else {
+        showToast("Error registering user", "error");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <View style={styles.formContainer}>
-      {/* Toast (moved outside the form!) */}
+      {/* Toast */}
       {message && (
         <Animated.View
           style={[
@@ -118,12 +157,19 @@ const Signup = ({ navigation }: Props) => {
           secureTextEntry
         />
 
-        <TouchableOpacity
-          onPress={handleRegister}
-          style={styles.loginBtnWrapper}
-        >
-          <Text style={styles.loginBtnText}>Register</Text>
-        </TouchableOpacity>
+        {loading ? (
+          <View style={styles.loginBtnWrapper}>
+            <ActivityIndicator color="#000" />
+          </View>
+        ) : (
+          <TouchableOpacity
+            disabled={loading}
+            onPress={handleRegister}
+            style={styles.loginBtnWrapper}
+          >
+            <Text style={styles.loginBtnText}>Register</Text>
+          </TouchableOpacity>
+        )}
 
         <View style={styles.lastRowWrapper}>
           <Text style={styles.headingWrapper_Caption}>
@@ -207,7 +253,7 @@ const styles = StyleSheet.create({
   },
   toastWrapper: {
     position: "absolute",
-    top: 0, // now truly touches top border
+    top: 0,
     left: 0,
     right: 0,
     paddingVertical: 12,
@@ -219,7 +265,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 6,
     borderBottomRightRadius: 6,
   },
-
   toastText: {
     color: "white",
     fontWeight: "600",
